@@ -1,0 +1,41 @@
+name: Go
+on:
+  push:
+
+jobs:
+  with-specific-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21.0"
+      # I expected "1.21.0"
+      - run: go version
+  from-version-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      # should I expected "1.21.0" or "1.22.0"?
+      - run: go version
+  with-specific-version-no-toolchain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: setup go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21.0"
+      - env:
+          # docs (https://go.dev/doc/toolchain#select):
+          # local indicates the bundled Go toolchain (the one that shipped with the go command being run),
+          GOTOOLCHAIN: local
+        run: go version
